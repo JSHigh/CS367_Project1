@@ -19,7 +19,7 @@ import java.util.*;
  */
 public class EmployeeDatabase {
 	
-	ArrayList<Employee> empList;	//	TODO: review; shouldn't make this public
+	ArrayList<Employee> empList;	
 	
 	/**
 	 * Constructs an empty employee database
@@ -79,7 +79,7 @@ public class EmployeeDatabase {
 	 * @return true if employee is found
 	 */
 	public boolean containsEmployee(String e) throws IllegalArgumentException {
-		// 	TODO: review - agree on checking null. probably throw this exc
+		
 		if (e == null)
 		{
 			throw new IllegalArgumentException();
@@ -98,7 +98,6 @@ public class EmployeeDatabase {
 	 * @return true if destination is in at least one wish list
 	 */
 	public boolean containsDestination(String d) throws IllegalArgumentException {
-		// 	TODO: review; probably throw this exception
 		if (d == null)
 		{
 			throw new IllegalArgumentException();
@@ -189,7 +188,6 @@ public class EmployeeDatabase {
 	 * @return true if removal succeeded, false otherwise
 	 */
 	public boolean removeEmployee(String e) throws IllegalArgumentException {
-		// TODO: review exception
 		if (e == null)
 		{
 			throw new IllegalArgumentException();

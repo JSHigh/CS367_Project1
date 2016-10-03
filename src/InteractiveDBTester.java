@@ -19,7 +19,7 @@ import java.text.DecimalFormat;
 
 public class InteractiveDBTester {
     public static void main(String[] args) {
-    	boolean Debug = false;
+    	boolean Debug = true;	// TODO: set to false
     	
     	//Check whether exactly one command-line argument is given; if not, display "Please provide input file as command-line argument" and quit.
     	int arglen = args.length; Boolean argisgood = (arglen == 1);
@@ -118,6 +118,11 @@ public class InteractiveDBTester {
                     // trim off any leading or trailing spaces
                     remainder = input.substring(1).trim();//.toLowerCase(); 
                 }
+                
+                if (remainder == "")
+                {
+                	continue;
+                }
 
                 switch (choice) {
                 
@@ -178,10 +183,9 @@ public class InteractiveDBTester {
 	                    break;
 	
 	                case 'i': {
-	                	// TODO: constants?
 	                	int numEmp = empDb.size();
-	                	int empCount = 0;
-	                	int numDest = 0;
+	                	float empCount = 0;
+	                	float numDest = 0;
 	                	int maxDestPerEmp = 0;
 	                	int minDestPerEmp = 0;
 	                	float avgDestPerEmp = 0;
@@ -220,9 +224,6 @@ public class InteractiveDBTester {
 	                		else {
 	                			minDestPerEmp = Math.min(minDestPerEmp, curListSize);
 	                		}
-//	                		if (curListSize >= 0) {
-//	                			avgEmpPerDest = InteractiveDBTester.movingAverage((1/curListSize), avgEmpPerDest, empCount);
-//	                		}
 	                		avgDestPerEmp = (numDest/empCount);  //InteractiveDBTester.movingAverage(curListSize, avgDestPerEmp, empCount);
 	                	}
 	                	
@@ -235,15 +236,15 @@ public class InteractiveDBTester {
 	                	//. . after each destination, check if the current value is higher than the previous
 	                	//. . if so, use the new value and new destination
 	                	String tempDest= "";
-	                	int tempCount = 0;
-	                	String finalDest = "";
+	                	int tempCount = 0;	//	number of employees that have a destination
+	                	String finalDest = "";	//	airport code for most popular destination
 	                	Iterator<String> uniqDestIter = uniqDestAry.iterator();
-	                	Iterator<Employee> empLoop = empDb.iterator();
 	                	
 	                	while (uniqDestIter.hasNext()) {
 	                		tempDest = uniqDestIter.next();
 	                		tempCount = 0;  //reset for each destination
 	                		
+	                		Iterator<Employee> empLoop = empDb.iterator();
 	                		while (empLoop.hasNext()) {
 	                			Employee tempEmp = empLoop.next();
 	                			if (empDb.hasDestination(tempEmp.getUsername() , tempDest)) {
@@ -251,8 +252,18 @@ public class InteractiveDBTester {
 	                			}
 	                		}
 	                		
+	                		if (Debug)
+	                		{
+	                			System.out.println(tempDest + " " + Integer.toString(tempCount));
+	                		}
+	                		
 	                		//employees per destination
+	                		if (tempCount > maxEmpPerDest)
+	                		{
+	                			finalDest = "";
+	                		}
 	                		maxEmpPerDest = Math.max(tempCount, maxEmpPerDest);
+	                		
 	                		if (minEmpPerDest == 0){
 	                			minEmpPerDest = tempCount;
 	                		}
@@ -284,21 +295,32 @@ public class InteractiveDBTester {
 	                	// 	If destination is not in the database, display "destination not found".
 	                	// Otherwise, search for destination and display the destination along with the employees who have that destination in their wish list (on one line) in the format:
 	                	// destination:employee1,employee2,employee3
-	                	if (!empDb.containsDestination(remainder)) {
-	                		System.out.println("destination not found");
-	                		break;
+	                	
+	                	try
+	                	{
+		                	if (!empDb.containsDestination(remainder)) {
+		                		System.out.println("destination not found");
+		                		break;
+		                	}
+		                	else {
+		                		String strEmplDests = remainder + ":";
+		                		ArrayList<String> listEmployees = (ArrayList<String>) empDb.getEmployees(remainder);
+		                		Iterator<String> strIter = listEmployees.iterator();
+		                		while (strIter.hasNext()) {
+		                			strEmplDests += strIter.next();
+		                			if (strIter.hasNext()) {
+		                				strEmplDests += ",";
+		                			}
+		                		}
+		                		System.out.println(strEmplDests);
+		                	}
 	                	}
-	                	else {
-	                		String strEmplDests = remainder + ":";
-	                		ArrayList<String> listEmployees = (ArrayList<String>) empDb.getEmployees(remainder);
-	                		Iterator<String> strIter = listEmployees.iterator();
-	                		while (strIter.hasNext()) {
-	                			strEmplDests += strIter.next();
-	                			if (strIter.hasNext()) {
-	                				strEmplDests += ",";
-	                			}
+	                	finally
+	                	{
+	                		if (Debug)
+	                		{
+	                			System.out.println("Bad parameter passed to containsDestination.");
 	                		}
-	                		System.out.println(strEmplDests);
 	                	}
 	                    break;
 	
@@ -369,27 +391,6 @@ public class InteractiveDBTester {
 		System.out.println(e.getUsername() + "," + destStr);
 		}
 	}
-    
-    /**
-     * Calculates an average based on an increasing denominator 
-     * 
-     * @param newVal New data point to add.
-     * @param curAvg Previous average of data point values.
-     * @param curCount Previous number of data points.
-     * @return Returns the moving average based on inputs.
-     * @throws IllegalArgumentException
-     */
-    private static float movingAverage(float newVal, float curAvg, int curCount) throws IllegalArgumentException {
-    	if (curCount == 0) {
-    		return newVal;
-    	}
-    	if (curCount <  0) {
-    		throw new IllegalArgumentException();
-    	}
-    	float newAvg = ((curAvg * curCount) + newVal)/(curCount + 1);
-    	System.out.println(Float.toString(curAvg) + " " + Integer.toString(curCount) + " " + Float.toString(newVal) + " " + Float.toString(newAvg));
-    	return newAvg;
-    }
     
     /**
      * Determines if a given string is already in the given array
