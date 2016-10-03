@@ -9,7 +9,9 @@
 // CS Login:         gordner
 // Lecturer's Name:  Charles Fischer
 
+package written;
 import java.util.*;
+import given.Employee;
 
 /**
  * Stores Employee objects into a database with their name and destination wishlists.
@@ -19,7 +21,7 @@ import java.util.*;
  */
 public class EmployeeDatabase {
 	
-	ArrayList<Employee> empList;	//	TODO: review; shouldn't make this public
+	ArrayList<Employee> empList;
 	
 	/**
 	 * Constructs an empty employee database

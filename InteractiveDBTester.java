@@ -178,10 +178,10 @@ public class InteractiveDBTester {
 	                    break;
 	
 	                case 'i': {
+	                	// TODO: constants?
 	                	int numEmp = empDb.size();
-	                	float empCount = 0;
-	                	float numDest = 0;
-	                	int uniqListSize = 0;
+	                	int empCount = 0;
+	                	int numDest = 0;
 	                	int maxDestPerEmp = 0;
 	                	int minDestPerEmp = 0;
 	                	float avgDestPerEmp = 0;
@@ -226,7 +226,7 @@ public class InteractiveDBTester {
 	                		avgDestPerEmp = (numDest/empCount);  //InteractiveDBTester.movingAverage(curListSize, avgDestPerEmp, empCount);
 	                	}
 	                	
-	                	uniqListSize = uniqDestAry.size();
+	                	int uniqListSize = uniqDestAry.size();
 	                	
 	                	// Most popular destination
 	                	//loop over the uniqDestAry array which contains all the unique destinations

@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/given/sampleInput.txt</name>
-			<type>1</type>
-			<location>C:/Users/jhigh/Documents/Classes/CS367/Project1/sampleInput.txt</location>
-		</link>
-	</linkedResources>
 </projectDescription>

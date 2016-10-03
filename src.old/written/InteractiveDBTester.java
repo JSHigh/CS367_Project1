@@ -2,26 +2,24 @@
 //
 // Title:            Project 1
 // Files:            InteractiveDBTester.java, EmployeeDatabase.java, Employee.java, sampleInput.txt
-// Semester:         CS367 Fall 2016
+// Semester:         CS 367 Fall 2016
 //
-// Author:           Justin High
-// Email:            
+// Author:           Justin High high@wisc.edu
 // CS Login:         high
+// Author 2:		 Aaron Gordner - gordner@wisc.edu
+// CS Login:         gordner
 // Lecturer's Name:  Charles Fischer
 // Lab Section:      N/A
 //
 //////////////////////////////////////////////////////////////////////////////
-
 package written;
 
-import java.util.*;
-
+import written.EmployeeDatabase;
 import given.Employee;
 
+import java.util.*;
 import java.io.*;
 import java.text.DecimalFormat;
-
-import written.EmployeeDatabase;
 
 public class InteractiveDBTester {
     public static void main(String[] args) {
@@ -195,40 +193,94 @@ public class InteractiveDBTester {
 	                	int minEmpPerDest = 0;
 	                	float avgEmpPerDest = 0;
 	                	DecimalFormat oneD = new DecimalFormat("###.#");
-	                	
 	                	Iterator<Employee> empIter = empDb.iterator();
+	                	ArrayList<String> uniqDestAry = new ArrayList<String>();
+	                	
 	                	while (empIter.hasNext()) {
+	                		//Total employees and unique destinations
 	                		Employee tempEmp = empIter.next();
-	                		ArrayList<String> destList = (ArrayList<String>) empDb.getDestinations(tempEmp.getUsername());
-	                		int curListSize = destList.size();
+	                		ArrayList<String> tempList = (ArrayList<String>) empDb.getDestinations(tempEmp.getUsername());
+	                		Iterator<String> tempDestIter = tempList.iterator();
+	                		int curListSize = tempList.size();
 	                		empCount++;
 	                		numDest += curListSize;
-	                		if (maxDestPerEmp == 0) {
-	                			maxDestPerEmp = curListSize;
+	                		
+	                		//need to exclude repeat destinations
+	                		//check the size of the uniqDestAry after we've looped through all employees
+	                		while (tempDestIter.hasNext()) {
+	                			String tempDest = tempDestIter.next();
+	                			
+	                			if (InteractiveDBTester.isUnique(tempDest, uniqDestAry)){
+	                				uniqDestAry.add(tempDest);
+	                			}
 	                		}
-	                		else {
-	                			maxDestPerEmp = Math.max(maxDestPerEmp, curListSize);
-	                		}
+	                		
+	                		//Destinations/employee
+	                		maxDestPerEmp = Math.max(maxDestPerEmp, curListSize);
+
 	                		if (minDestPerEmp == 0) {
 	                			minDestPerEmp = curListSize;
 	                		}
 	                		else {
 	                			minDestPerEmp = Math.min(minDestPerEmp, curListSize);
 	                		}
-	                		if (curListSize >= 0) {
-	                			avgEmpPerDest = InteractiveDBTester.movingAverage(1/curListSize, avgEmpPerDest, empCount);
-	                		}
-	                		avgDestPerEmp = InteractiveDBTester.movingAverage(curListSize, avgDestPerEmp, empCount);
+//	                		if (curListSize >= 0) {
+//	                			avgEmpPerDest = InteractiveDBTester.movingAverage((1/curListSize), avgEmpPerDest, empCount);
+//	                		}
+	                		avgDestPerEmp = (numDest/empCount);  //InteractiveDBTester.movingAverage(curListSize, avgDestPerEmp, empCount);
 	                	}
 	                	
-	                	// TODO: complete stats
-	                	String dests = "";
-	                	int intPopDestCount = 0;
+	                	int uniqListSize = uniqDestAry.size();
+	                	
+	                	// Most popular destination
+	                	//loop over the uniqDestAry array which contains all the unique destinations
+	                	//. loop over each employee to see if they have that destination
+	                	//. . if so, increment the counter
+	                	//. . after each destination, check if the current value is higher than the previous
+	                	//. . if so, use the new value and new destination
+	                	String tempDest= "";
+	                	int tempCount = 0;
+	                	String finalDest = "";
+	                	Iterator<String> uniqDestIter = uniqDestAry.iterator();
+	                	Iterator<Employee> empLoop = empDb.iterator();
+	                	
+	                	while (uniqDestIter.hasNext()) {
+	                		tempDest = uniqDestIter.next();
+	                		tempCount = 0;  //reset for each destination
+	                		
+	                		while (empLoop.hasNext()) {
+	                			Employee tempEmp = empLoop.next();
+	                			if (empDb.hasDestination(tempEmp.getUsername() , tempDest)) {
+	                				tempCount += 1;
+	                			}
+	                		}
+	                		
+	                		//employees per destination
+	                		maxEmpPerDest = Math.max(tempCount, maxEmpPerDest);
+	                		if (minEmpPerDest == 0){
+	                			minEmpPerDest = tempCount;
+	                		}
+	                		else {
+	                			minEmpPerDest = Math.min(tempCount, minEmpPerDest);
+	                		}
+	                		
+	                		if (tempCount == maxEmpPerDest) {
+	                			if (finalDest == ""){
+		                			finalDest = tempDest;
+	                			}
+	                			else {
+	                				finalDest = finalDest + "," + tempDest;
+	                			}
+	                		}	                		
+	                	}
+	                	
+	                	avgEmpPerDest = (numDest/uniqListSize);
+	                	
 	                	// output
-	                	System.out.println("Employees: " + Integer.toString(numEmp) + ", Destinations: " + Integer.toString(numDest));
+	                	System.out.println("Employees: " + Integer.toString(numEmp) + ", Destinations: " + Integer.toString(uniqListSize));
 	                	System.out.println("# of destinations/employee: most " + Integer.toString(maxDestPerEmp) + ", least " + Integer.toString(minDestPerEmp) + ", average " + oneD.format(avgDestPerEmp));
-	                	System.out.println("# of employees/destination: most " + Integer.toString(maxEmpPerDest) + ", least " + Integer.toString(minEmpPerDest) + ", average " + oneD.format(avgEmpPerDest));
-	                	System.out.println("Most popular destination: " + dests + " [" + Integer.toString(intPopDestCount) + "]");
+	                	System.out.println("# of employees/destination: most " + Integer.toString(maxEmpPerDest) + ", least " + Integer.toString(Math.max(minEmpPerDest, 1)) + ", average " + oneD.format(avgEmpPerDest));  //make sure min value is at least 1
+	                	System.out.println("Most popular destination: " + finalDest + " [" + Integer.toString(maxEmpPerDest) + "]");
 	                    break;
 	                }
 	                    
@@ -323,6 +375,7 @@ public class InteractiveDBTester {
 	}
     
     /**
+     * Calculates an average based on an increasing denominator 
      * 
      * @param newVal New data point to add.
      * @param curAvg Previous average of data point values.
@@ -340,5 +393,25 @@ public class InteractiveDBTester {
     	float newAvg = ((curAvg * curCount) + newVal)/(curCount + 1);
     	System.out.println(Float.toString(curAvg) + " " + Integer.toString(curCount) + " " + Float.toString(newVal) + " " + Float.toString(newAvg));
     	return newAvg;
+    }
+    
+    /**
+     * Determines if a given string is already in the given array
+     * 
+     * @param testDest - String to check for in the array
+     * @param destinations - Array of unique destinations
+     * @return False if the given string is in the given array
+     */
+    private static boolean isUnique(String testDest, ArrayList<String> destinations) {
+    	Iterator<String> destIter = destinations.iterator();
+    	
+    	while (destIter.hasNext()) {
+    		String dest = destIter.next();
+    		//System.out.println("in loop " + dest + " - " + testDest);
+    		if (testDest.equals(dest)) {
+    			return false;
+    		}
+    	}
+    	return true;
     }
 }

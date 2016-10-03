@@ -1,9 +1,15 @@
 package written;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
+///////////////////////////////////////////////////////////////////////////////
+//Main Class File:  InteractiveDBTester
+//File:             EmployeeListIterator
+//Semester:         CS 367 - Fall 2016
+//
+//Author:           Justin High high@wisc.edu
+//CS Login:         high
+//Author 2:		 Aaron Gordner - gordner@wisc.edu
+//CS Login:         gordner
+//Lecturer's Name:  Charles Fischer
+import java.util.*;
 import given.Employee;
 
 public class EmployeeListIterator implements Iterator<Employee> {
