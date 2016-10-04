@@ -42,7 +42,7 @@ public class EmployeeDatabase {
 	public void addEmployee(String e) throws IllegalArgumentException {
 		// Adds a new given.Employee to the database
 		Employee newEmployee = null;
-		if (e == null) {
+		if (e == "") {
 			throw new IllegalArgumentException();
 		}
 		else {
@@ -61,7 +61,7 @@ public class EmployeeDatabase {
 	 * @return (description of the return value)
 	 */
 	public void addDestination(String e, String d) throws IllegalArgumentException {
-		if (this.containsEmployee(e) == false) {
+		if ((this.containsEmployee(e) == false) || (d == "")) {
 			throw new IllegalArgumentException();
 		}
 		else {
@@ -164,7 +164,7 @@ public class EmployeeDatabase {
 	 * @param e - Employee's username
 	 * @return Wish list for given employee
 	 */
-	public List<String> getDestinations(String e){
+	public List<String> getDestinations(String e) {
 		Employee tempEmp = this.retreiveEmployee(e);
 		if (tempEmp.getUsername().isEmpty()) {
 			return null;

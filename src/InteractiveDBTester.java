@@ -19,7 +19,7 @@ import java.text.DecimalFormat;
 
 public class InteractiveDBTester {
     public static void main(String[] args) {
-    	boolean Debug = true;	// TODO: set to false
+    	boolean Debug = false;	// TODO: set to false
     	
     	//Check whether exactly one command-line argument is given; if not, display "Please provide input file as command-line argument" and quit.
     	int arglen = args.length; Boolean argisgood = (arglen == 1);
@@ -66,8 +66,9 @@ public class InteractiveDBTester {
     		
     		// create new employee
     		String employeeName = currentLinePieces[0].toLowerCase();
-    		try {
-    			empDb.addEmployee(employeeName);    			
+    		try
+    		{
+    			empDb.addEmployee(employeeName);	  			
     		}
     		catch (IllegalArgumentException e) {
     			if (Debug) {
@@ -118,12 +119,6 @@ public class InteractiveDBTester {
                     // trim off any leading or trailing spaces
                     remainder = input.substring(1).trim();//.toLowerCase(); 
                 }
-                
-                if (remainder == "")
-                {
-                	continue;
-                }
-
                 switch (choice) {
                 
 	                case 'd':
@@ -200,7 +195,16 @@ public class InteractiveDBTester {
 	                		//Total employees and unique destinations
 	                		Employee tempEmp = empIter.next();
 	                		ArrayList<String> tempList = (ArrayList<String>) empDb.getDestinations(tempEmp.getUsername());
-	                		Iterator<String> tempDestIter = tempList.iterator();
+	                		Iterator<String> tempDestIter = null;
+	                		try { tempDestIter = tempList.iterator();}
+	                		catch (NullPointerException e)
+	                		{
+	                			String s = "what";
+	                		}
+	                		finally
+	                		{
+	                			String s = "what";
+	                		}
 	                		int curListSize = tempList.size();
 	                		empCount++;
 	                		numDest += curListSize;
